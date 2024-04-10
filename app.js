@@ -9,6 +9,7 @@ const bcrypt = require('bcrypt')
 const app=express()
 app.use(express.json());
 app.use(cors())
+const PORT = process.env.PORT || 3000;
 
 const dbPath = path.join(__dirname, "traveldairy.db")
 
@@ -49,8 +50,8 @@ const initializeDBAndServer = async () => {
            )
        `);
 
-        app.listen(3000,()=> {
-            console.log('server  running at port 3000')
+        app.listen(PORT,()=> {
+            console.log('server  running at port',PORT)
         })
         
     }
