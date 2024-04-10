@@ -37,4 +37,6 @@ Request body: json
 
 DELETE  /diary/:id  :  Delete a specific travel diary entry (requires authentication).
 
-Authentication Authentication is done using JWT (JSON Web Tokens). After successful login, a JWT token is generated and sent in the response. This token should be included in the Authorization header of subsequent requests to authenticated endpoints.
+Authentication 
+--------------
+Authentication is done using JWT (JSON Web Tokens). After successful login, a JWT token is generated and sent in the response. This token should be included in the Authorization header of subsequent requests to authenticated endpoints.
