@@ -78,6 +78,7 @@ const authenticateUser = async (req, res, next) => {
         // Verify token and extract user id
         const decoded = jwt.verify(token, "SECRET_KEY");
         const userId = decoded.userId;
+    
 
         // Fetch user from database based on user id
         const user = await db.get(
@@ -92,6 +93,7 @@ const authenticateUser = async (req, res, next) => {
 
         // Store user in request object for further use
         req.user = user;
+        
         next();
     } catch (error) {
         console.log(error);
@@ -149,10 +151,10 @@ app.post('/login', async (req, res) => {
 //route to add a travel entry
 app.post('/diary', authenticateUser, async (request, response)=> {
     try{
-        const {title, description, date, location} = request.body;
-        const userId = request.user.id;
-        const addEntry = ` INSERT INTO travel(title, description, date, location) 
-            VALUES('${title}', '${description}', '${date}', '${location}')`;
+        const {id, title, description, date, location} = request.body;
+       
+        const addEntry = ` INSERT INTO travel(id,title, description, date, location) 
+            VALUES(${id},'${title}', '${description}', '${date}', '${location}')`;
 
         await db.run(addEntry);
         response.send("Travel entry added successfully");
@@ -165,10 +167,9 @@ app.post('/diary', authenticateUser, async (request, response)=> {
 // Route to get all travel entries
 app.get('/diary', authenticateUser, async (request, response) => {
     try {
-        const userId = request.user.id;
-
+        
         const getAllEntries = `
-            SELECT * FROM travel WHERE user_id = ${userId}
+            SELECT * FROM travel 
         `;
 
         const entries = await db.all(getAllEntries);
@@ -191,7 +192,7 @@ app.put('/diary/:id', authenticateUser, async (request, response) => {
         const updateEntry = `
             UPDATE travel
             SET title='${title}' , description = '${description}', date = '${date}', location = '${location}'
-            WHERE id = ${id} and user_id =${request.user.id}
+            WHERE id = ${id} 
         `;
         await db.run(updateEntry);
         response.send(`Travel entry "${title}" updated successfully`);
@@ -206,7 +207,7 @@ app.delete('/diary/:id', authenticateUser, async (request, response) => {
         const { id } = request.params;
         const deleteEntry = `
             DELETE FROM travel
-            WHERE id = ${id} and user_id =${request.user.id}
+            WHERE id = ${id} 
         `;
         await db.run(deleteEntry);
         response.send(`Travel entry "${id}" deleted successfully`);
@@ -214,3 +215,7 @@ app.delete('/diary/:id', authenticateUser, async (request, response) => {
         console.log(error);
     }
 });
+
+app.get('/', (req, res)=> {
+    res.send("Hello, Welcome")
+})
